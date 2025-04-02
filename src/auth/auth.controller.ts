@@ -10,14 +10,16 @@ export class AuthController {
   @Post('signup')
   signup() {
     // return 'i am signUp';
-    return {
-      message: 'signup route!!',
-      status: 'ok',
-    };
+    // return {
+    //   message: 'signup route!!',
+    //   status: 'ok',
+    // };
+    return this.authService.signup();
   }
 
   @Post('signin')
   signin() {
-    return 'i am signIn';
+    // return 'i am signIn';
+    return this.authService.signin();
   }
 }

@@ -6,7 +6,14 @@ export class AuthService {
   //     return 'this is a test function in auth service';
   //   }
 
-  login() {}
+  signin() {
+    return {
+      message: 'signin route auth service!!',
+      status: 'ok but empty',
+    };
+  }
 
-  signup() {}
+  signup() {
+    return 'i am signIn';
+  }
 }
