@@ -11,6 +11,7 @@ export class UserController {
       user: req.user,
     });
 
-    return 'use info';
+    // return 'use info';
+    return req.user;
   }
 }
