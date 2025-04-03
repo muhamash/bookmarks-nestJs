@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,24 +10,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id Int @id @default(autoincrement())
+model User {
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email String
-  hash String
-  
+  email String @unique
+  hash  String
+
   firstName String?
-  lastName String?
+  lastName  String?
+
+  bookmarks Bookmark[]
+
+  @@map("users")
 }
 
-model BookMark{
-  id Int @id @default(autoincrement())
+model Bookmark {
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title String
+  title       String
   description String?
-  link String
+  link        String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("bookmarks")
 }
