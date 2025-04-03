@@ -32,11 +32,14 @@ export class AuthService {
 
     // return userWithoutHash;
 
-    return {
-      message: 'signin route auth service!!',
-      status: 'ok',
-      data: userWithoutHash,
-    };
+    // return {
+    //   message: 'signin route auth service!!',
+    //   status: 'ok',
+    //   data: userWithoutHash,
+    // };
+
+    console.log('user found', userWithoutHash, user);
+    return userWithoutHash;
   }
 
   async signup(dto: AuthDto) {
