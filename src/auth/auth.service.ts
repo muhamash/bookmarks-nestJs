@@ -32,8 +32,8 @@ export class AuthService {
     }
 
     const { hash, ...userWithoutHash } = user;
-
     console.log('user found', userWithoutHash, 'with pass', user);
+
     return this.signToken(
       userWithoutHash.id,
       userWithoutHash.email,
@@ -54,13 +54,12 @@ export class AuthService {
       });
 
       const { hash, ...userWithoutHash } = user;
-
       console.log('User created:', userWithoutHash);
-      return this.signToken(
-        userWithoutHash.id,
-        userWithoutHash.email,
-        userWithoutHash.firstName ?? 'No Name',
-      );
+
+      return {
+        userId: userWithoutHash.id,
+        userEmail: userWithoutHash.email,
+      };
     } catch (error) {
       console.log(error);
       if (error instanceof PrismaClientKnownRequestError) {
@@ -92,7 +91,7 @@ export class AuthService {
     const secret = this.config.get<string>('JWT_SECRET');
 
     const token = await this.jwt.signAsync(payload, {
-      expiresIn: '50m',
+      expiresIn: '5m',
       secret: secret,
     });
 

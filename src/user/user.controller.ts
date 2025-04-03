@@ -1,9 +1,8 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
 
-@ApiTags('Users')
 @ApiBearerAuth()
 @Controller('users')
 export class UserController {

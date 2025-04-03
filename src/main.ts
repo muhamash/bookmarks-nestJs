@@ -10,8 +10,8 @@ async function bootstrap() {
     .setTitle('Bookmark api')
     .setDescription('The test ->> bookmark API description')
     .setVersion('1.0')
-    .addTag('bookmark')
-    .addTag('user')
+    // .addTag('bookmark')
+    // .addTag('user')
     .addBearerAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
