@@ -11,4 +11,10 @@ export class AuthDto {
   //   message: 'Password must be a string or a number',
   // }) // Alphanumeric check
   password: string;
+
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
 }
