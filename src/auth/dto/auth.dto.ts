@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class AuthDto {
   @IsEmail()
   @IsNotEmpty()
@@ -12,9 +12,11 @@ export class AuthDto {
   // }) // Alphanumeric check
   password: string;
 
+  @IsOptional()
   @IsString()
-  firstName: string;
+  firstName?: string;
 
+  @IsOptional()
   @IsString()
-  lastName: string;
+  lastName?: string;
 }
