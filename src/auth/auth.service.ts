@@ -34,7 +34,11 @@ export class AuthService {
     const { hash, ...userWithoutHash } = user;
 
     console.log('user found', userWithoutHash, 'with pass', user);
-    return this.signToken(userWithoutHash.id, userWithoutHash.email);
+    return this.signToken(
+      userWithoutHash.id,
+      userWithoutHash.email,
+      userWithoutHash.firstName ?? 'No Name',
+    );
   }
 
   async signup(dto: AuthDto) {
@@ -52,22 +56,34 @@ export class AuthService {
       const { hash, ...userWithoutHash } = user;
 
       console.log('User created:', userWithoutHash);
-      return this.signToken(userWithoutHash.id, userWithoutHash.email);
+      return this.signToken(
+        userWithoutHash.id,
+        userWithoutHash.email,
+        userWithoutHash.firstName ?? 'No Name',
+      );
     } catch (error) {
       console.log(error);
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new ForbiddenException(
-            'this credential already registered into database',
+            'This credential already registered into database',
           );
         }
       }
-
       throw error;
     }
   }
 
-  signToken(userId: number, userEmail: string): Promise<string> {
+  async signToken(
+    userId: number,
+    userEmail: string,
+    userName: string,
+  ): Promise<{
+    accessToken: string;
+    userEmail: string;
+    userName: string;
+    userId: number;
+  }> {
     const payload = {
       sub: userId,
       userEmail,
@@ -75,9 +91,16 @@ export class AuthService {
 
     const secret = this.config.get<string>('JWT_SECRET');
 
-    return this.jwt.signAsync(payload, {
+    const token = await this.jwt.signAsync(payload, {
       expiresIn: '5m',
       secret: secret,
     });
+
+    return {
+      accessToken: token,
+      userEmail: userEmail,
+      userName: userName,
+      userId: userId,
+    };
   }
 }
