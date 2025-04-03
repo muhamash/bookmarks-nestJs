@@ -12,10 +12,30 @@ export class AuthService {
 
   constructor(private prisma: PrismaService) {}
 
-  signin() {
+  async signin(dto: AuthDto) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+
+    if (!user) {
+      throw new ForbiddenException('Credentials not found!!!');
+    }
+
+    const pwMatches = await argon.verify(user.hash, dto.password);
+    if (!pwMatches) {
+      throw new ForbiddenException('Password incorrect!!!');
+    }
+
+    const { hash, ...userWithoutHash } = user;
+
+    // return userWithoutHash;
+
     return {
       message: 'signin route auth service!!',
-      status: 'ok but empty',
+      status: 'ok',
+      data: userWithoutHash,
     };
   }
 
