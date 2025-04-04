@@ -30,7 +30,13 @@ describe('App e2e', () => {
 
   // it.todo('should have a test');
   describe('Auth', () => {
-    describe('Signup', () => {});
+    describe('Signup', () => {
+      it.todo('should signup');
+      it.todo('should throw error if email is already taken');
+      it.todo('should throw error if password is too short');
+      it.todo('should throw error if password is too weak');
+      it.todo('should throw error if email is invalid');
+    });
     describe('Signin', () => {});
   });
 
