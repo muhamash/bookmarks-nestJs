@@ -27,6 +27,6 @@ export class UserController {
     return user;
   }
 
-  @Patch()
+  @Patch('edit')
   editUser() {}
 }
