@@ -126,13 +126,35 @@ describe('App e2e', () => {
           .post(`/auth/signin`)
           .withBody(dto)
           .expectStatus(200)
-          .inspect();
+          .inspect()
+          .stores('userAt', 'accessToken');
       });
     });
   });
 
   describe('User', () => {
-    describe('Get Me', () => {});
+    describe('Get Me', () => {
+      it('throw if no token', () => {
+        return pactum
+          .spec()
+          .get('/users/me')
+          .expectStatus(401)
+          .expectBodyContains('Unauthorized')
+          .inspect();
+      });
+
+      it('should get current user if token provided', () => {
+        return pactum
+          .spec()
+          .get('/users/me')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200)
+          .inspect();
+      });
+    });
+
     describe('Edit user', () => {});
   });
 
