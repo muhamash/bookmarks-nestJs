@@ -17,9 +17,10 @@ export class UserController {
     status: 401,
     description: 'Unauthorized - Invalid or missing token',
   })
-  getMe(@GetUser() user: User) {
+  getMe(@GetUser() user: User, @GetUser('email') email: string) {
     console.log({
-      user: user,
+      // user: user,
+      email,
     });
 
     // return 'use info';

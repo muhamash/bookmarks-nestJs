@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
 
@@ -9,6 +10,15 @@ export class AuthController {
     // this.authService.test();
   }
 
+  // @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: 201,
+    description: 'User profile created successfully',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden request',
+  })
   @Post('signup')
   // signup(@Req() req: Request) {
   //   // return 'i am signUp';
@@ -27,6 +37,15 @@ export class AuthController {
     return this.authService.signup(dto);
   }
 
+  @ApiResponse({
+    status: 200,
+    description: 'User profile retrieved successfully',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Not found',
+  })
+  @HttpCode(HttpStatus.OK)
   @Post('signin')
   signin(@Body() dto: AuthDto) {
     // return 'i am signIn';
