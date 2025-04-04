@@ -1,6 +1,7 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
-import { Request } from 'express';
+import { User } from '@prisma/client';
+import { GetUser } from 'src/auth/decorator';
 import { JwtGuard } from 'src/auth/guard';
 
 @ApiBearerAuth()
@@ -16,12 +17,15 @@ export class UserController {
     status: 401,
     description: 'Unauthorized - Invalid or missing token',
   })
-  getMe(@Req() req: Request) {
+  getMe(@GetUser() user: User) {
     console.log({
-      user: req.user,
+      user: user,
     });
 
     // return 'use info';
-    return req.user;
+    return user;
   }
+
+  @Patch()
+  editUser() {}
 }
