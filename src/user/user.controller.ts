@@ -1,12 +1,12 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
+import { JwtGuard } from 'src/auth/guard';
 
 @ApiBearerAuth()
 @Controller('users')
 export class UserController {
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtGuard)
   @Get('me')
   @ApiResponse({
     status: 200,
