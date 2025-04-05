@@ -31,7 +31,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
     });
   }
 
-   validate(
+  validate(
     req: Request,
     payload: {
       sub: number;

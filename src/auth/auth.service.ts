@@ -34,10 +34,10 @@ export class AuthService {
       });
 
       const { hash, ...userWithoutHash } = user;
-      console.log(
-        'User created:',
-        userWithoutHash,
-      );
+      // console.log(
+      //   'User created:',
+      //   userWithoutHash,
+      // );
 
       return {
         userId: userWithoutHash.id,
@@ -84,7 +84,7 @@ export class AuthService {
     }
 
     const { hash, ...userWithoutHash } = user;
-    // console.log('user found', userWithoutHash, 'with pass', user);
+    // console.log('user found', userWithoutHash);
 
     return this.signToken(
       userWithoutHash.id,
@@ -93,7 +93,19 @@ export class AuthService {
     );
   }
 
-  logout() {}
+  async logout(userId: number) {
+    await this.prisma.user.updateMany({
+      where: {
+        id: userId,
+        hashedRefreshToken: {
+          not: null,
+        },
+      },
+      data: {
+        hashedRefreshToken: null,
+      },
+    });
+  }
 
   refresh() {}
 
@@ -133,6 +145,13 @@ export class AuthService {
       refreshToken,
     );
 
+    console.log({
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      userEmail: userEmail,
+      userName: userName,
+      userId: userId,
+    });
     return {
       accessToken: accessToken,
       refreshToken: refreshToken,

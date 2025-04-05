@@ -5,10 +5,17 @@ import
     HttpCode,
     HttpStatus,
     Post,
+    UseGuards,
   } from '@nestjs/common';
-import { ApiResponse } from '@nestjs/swagger';
+import
+  {
+    ApiBearerAuth,
+    ApiResponse,
+  } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
+import { GetUser } from './decorator';
 import { AuthDto } from './dto';
+import { JwtGuard, RtGuard } from './guard';
 
 // @ApiBearerAuth()
 @Controller('auth')
@@ -17,7 +24,7 @@ export class AuthController {
     // this.authService.test();
   }
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
     status: 201,
     description:
@@ -28,15 +35,6 @@ export class AuthController {
     description: 'Forbidden request',
   })
   @Post('signup')
-  // signup(@Req() req: Request) {
-  //   // return 'i am signUp';
-  //   // return {
-  //   //   message: 'signup route!!',
-  //   //   status: 'ok',
-  //   // };
-  //   console.log(req.body);
-  //   return this.authService.signup(req.body);
-  // }
   signup(@Body() dto: AuthDto) {
     // console.log({
     //   dto,
@@ -61,6 +59,8 @@ export class AuthController {
     return this.authService.signin(dto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
@@ -71,15 +71,16 @@ export class AuthController {
     status: 403,
     description: 'Forbidden request',
   })
-  logout() {
-    // return 'i am signOut';
-    // return {
-    //   message: 'signout route!!',
-    //   status: 'ok',
-    // };
-    // return this.authService.logout();
+  logout(@GetUser('id') userId: number) {
+    console.log(
+      'logging out the userId:',
+      userId,
+    );
+
+    return this.authService.logout(userId);
   }
 
+  @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
@@ -97,6 +98,6 @@ export class AuthController {
     //   message: 'refresh route!!',
     //   status: 'ok',
     // };
-    // return this.authService.refresh();
+    return this.authService.refresh();
   }
 }
