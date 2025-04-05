@@ -19,7 +19,7 @@ export class UserService {
       },
     });
 
-    console.log('User updated:', user);
+    // console.log('User updated:', user);
     const { hash, ...userWithOutPassword } = user;
 
     return userWithOutPassword;

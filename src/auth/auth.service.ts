@@ -19,40 +19,6 @@ export class AuthService {
     private config: ConfigService,
   ) {}
 
-  async signin(dto: AuthDto) {
-    const user =
-      await this.prisma.user.findUnique({
-        where: {
-          email: dto.email,
-        },
-      });
-
-    if (!user) {
-      throw new ForbiddenException(
-        'Credentials not found!!!',
-      );
-    }
-
-    const pwMatches = await argon.verify(
-      user.hash,
-      dto.password,
-    );
-    if (!pwMatches) {
-      throw new ForbiddenException(
-        'Password incorrect!!!',
-      );
-    }
-
-    const { hash, ...userWithoutHash } = user;
-    // console.log('user found', userWithoutHash, 'with pass', user);
-
-    return this.signToken(
-      userWithoutHash.id,
-      userWithoutHash.email,
-      userWithoutHash.firstName ?? 'No Name',
-    );
-  }
-
   async signup(dto: AuthDto) {
     try {
       const hashPass = await argon.hash(
@@ -93,12 +59,51 @@ export class AuthService {
     }
   }
 
+  async signin(dto: AuthDto) {
+    const user =
+      await this.prisma.user.findUnique({
+        where: {
+          email: dto.email,
+        },
+      });
+
+    if (!user) {
+      throw new ForbiddenException(
+        'Credentials not found!!!',
+      );
+    }
+
+    const pwMatches = await argon.verify(
+      user.hash,
+      dto.password,
+    );
+    if (!pwMatches) {
+      throw new ForbiddenException(
+        'Password incorrect!!!',
+      );
+    }
+
+    const { hash, ...userWithoutHash } = user;
+    // console.log('user found', userWithoutHash, 'with pass', user);
+
+    return this.signToken(
+      userWithoutHash.id,
+      userWithoutHash.email,
+      userWithoutHash.firstName ?? 'No Name',
+    );
+  }
+
+  logout() {}
+
+  refresh() {}
+
   async signToken(
     userId: number,
     userEmail: string,
     userName: string,
   ): Promise<{
     accessToken: string;
+    refreshToken: string;
     userEmail: string;
     userName: string;
     userId: number;
@@ -111,23 +116,49 @@ export class AuthService {
     const secret =
       this.config.get<string>('JWT_SECRET');
 
-    const token = await this.jwt.signAsync(
-      payload,
-      {
-        expiresIn: '50m',
-        secret: secret,
-      },
+    const [accessToken, refreshToken] =
+      await Promise.all([
+        this.jwt.signAsync(payload, {
+          expiresIn: '15m',
+          secret: secret,
+        }),
+        this.jwt.signAsync(payload, {
+          expiresIn: '3h',
+          secret: secret,
+        }),
+      ]);
+
+    await this.updateRefreshHash(
+      userId,
+      refreshToken,
     );
 
     return {
-      accessToken: token,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
       userEmail: userEmail,
       userName: userName,
       userId: userId,
     };
   }
 
-  logout() {}
+  private async hashData(
+    data: string,
+  ): Promise<string> {
+    return await argon.hash(data);
+  }
 
-  refresh() {}
+  async updateRefreshHash(
+    userId: number,
+    refreshToken: string,
+  ): Promise<void> {
+    const hash =
+      await this.hashData(refreshToken);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        hashedRefreshToken: hash,
+      },
+    });
+  }
 }
