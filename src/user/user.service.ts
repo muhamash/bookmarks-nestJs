@@ -16,7 +16,7 @@ export class UserService {
       },
     });
 
-    console.log('User updated:', user);
+    // console.log('User updated:', user);
 
     return user;
   }
