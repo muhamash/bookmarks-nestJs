@@ -164,15 +164,21 @@ describe('App e2e', () => {
       };
 
       it('should edit the user', () => {
-        return pactum
-          .spec()
-          .patch('/users/me')
-          .withHeaders({
-            Authorization: 'Bearer $S{userAt}',
-          })
-          .withBody(dto)
-          .expectStatus(200)
-          .inspect();
+        return (
+          pactum
+            .spec()
+            .patch('/users/me')
+            .withHeaders({
+              Authorization: 'Bearer $S{userAt}',
+            })
+            .withBody(dto)
+            .expectStatus(200)
+            .expectBodyContains(dto.email)
+            // .expectBodyContains('Pika')
+            // .expectBodyContains('Pikachu')
+            // .expectBodyContains(dto.password)
+            .inspect()
+        );
       });
 
       it('should throw if no token or some error', () => {
