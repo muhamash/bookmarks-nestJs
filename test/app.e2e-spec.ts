@@ -1,4 +1,5 @@
 import { AuthDto } from '@/auth/dto';
+import { EdiTUserDto } from '@/user/dto';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as pactum from 'pactum';
@@ -155,7 +156,25 @@ describe('App e2e', () => {
       });
     });
 
-    describe('Edit user', () => {});
+    describe('Edit user', () => {
+      const dto: EdiTUserDto = {
+        firstName: 'Pikachu',
+        lastName: 'Pika',
+        email: 'pika@test.com',
+      };
+
+      it('should edit the user', () => {
+        return pactum
+          .spec()
+          .patch('/users/edit')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .withBody(dto)
+          .expectStatus(200)
+          .inspect();
+      });
+    });
   });
 
   describe('Bookmark', () => {

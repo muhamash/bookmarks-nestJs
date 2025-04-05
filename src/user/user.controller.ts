@@ -1,12 +1,16 @@
-import { Controller, Get, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
+import { EdiTUserDto } from './dto';
+import { UserService } from './user.service';
 
 @ApiBearerAuth()
 @Controller('users')
 export class UserController {
+  constructor(private userService: UserService) {}
+
   @UseGuards(JwtGuard)
   @Get('me')
   @ApiResponse({
@@ -28,5 +32,5 @@ export class UserController {
   }
 
   @Patch('edit')
-  editUser() {}
+  editUser(@GetUser('id') userId: number, @Body() dto: EdiTUserDto) {}
 }
