@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import
+  {
+    Body,
+    Controller,
+    HttpCode,
+    HttpStatus,
+    Post,
+  } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
@@ -10,10 +17,11 @@ export class AuthController {
     // this.authService.test();
   }
 
-  // @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: 201,
-    description: 'User profile created successfully',
+    description:
+      'User profile created successfully',
   })
   @ApiResponse({
     status: 403,
@@ -39,7 +47,8 @@ export class AuthController {
 
   @ApiResponse({
     status: 200,
-    description: 'User profile retrieved successfully',
+    description:
+      'User profile retrieved successfully',
   })
   @ApiResponse({
     status: 403,
@@ -75,7 +84,8 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: 200,
-    description: 'User refresh token successfully',
+    description:
+      'User refresh token successfully',
   })
   @ApiResponse({
     status: 403,

@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import
+  {
+    ForbiddenException,
+    Injectable,
+  } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
@@ -16,19 +20,27 @@ export class AuthService {
   ) {}
 
   async signin(dto: AuthDto) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
+    const user =
+      await this.prisma.user.findUnique({
+        where: {
+          email: dto.email,
+        },
+      });
 
     if (!user) {
-      throw new ForbiddenException('Credentials not found!!!');
+      throw new ForbiddenException(
+        'Credentials not found!!!',
+      );
     }
 
-    const pwMatches = await argon.verify(user.hash, dto.password);
+    const pwMatches = await argon.verify(
+      user.hash,
+      dto.password,
+    );
     if (!pwMatches) {
-      throw new ForbiddenException('Password incorrect!!!');
+      throw new ForbiddenException(
+        'Password incorrect!!!',
+      );
     }
 
     const { hash, ...userWithoutHash } = user;
@@ -43,7 +55,9 @@ export class AuthService {
 
   async signup(dto: AuthDto) {
     try {
-      const hashPass = await argon.hash(dto.password);
+      const hashPass = await argon.hash(
+        dto.password,
+      );
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
@@ -54,7 +68,10 @@ export class AuthService {
       });
 
       const { hash, ...userWithoutHash } = user;
-      console.log('User created:', userWithoutHash);
+      console.log(
+        'User created:',
+        userWithoutHash,
+      );
 
       return {
         userId: userWithoutHash.id,
@@ -62,7 +79,10 @@ export class AuthService {
       };
     } catch (error) {
       console.log(error);
-      if (error instanceof PrismaClientKnownRequestError) {
+      if (
+        error instanceof
+        PrismaClientKnownRequestError
+      ) {
         if (error.code === 'P2002') {
           throw new ForbiddenException(
             'This credential already registered into database',
@@ -88,12 +108,16 @@ export class AuthService {
       userEmail,
     };
 
-    const secret = this.config.get<string>('JWT_SECRET');
+    const secret =
+      this.config.get<string>('JWT_SECRET');
 
-    const token = await this.jwt.signAsync(payload, {
-      expiresIn: '50m',
-      secret: secret,
-    });
+    const token = await this.jwt.signAsync(
+      payload,
+      {
+        expiresIn: '50m',
+        secret: secret,
+      },
+    );
 
     return {
       accessToken: token,
@@ -102,4 +126,8 @@ export class AuthService {
       userId: userId,
     };
   }
+
+  logout() {}
+
+  refresh() {}
 }
