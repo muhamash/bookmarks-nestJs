@@ -12,11 +12,20 @@ import
         Post,
         UseGuards,
     } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import
+    {
+        ApiBearerAuth,
+        ApiCreatedResponse,
+        ApiNoContentResponse,
+        ApiOkResponse,
+        ApiOperation,
+        ApiParam,
+        ApiResponse,
+    } from '@nestjs/swagger';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { BookmarkService } from './bookmark.service';
-import { CreateBookmarkDto, EditBookmarkDto } from './dto';
+import { BookmarkDto, CreateBookmarkDto, EditBookmarkDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -24,6 +33,11 @@ import { CreateBookmarkDto, EditBookmarkDto } from './dto';
 export class BookmarkController {
   constructor(private bookmarkService: BookmarkService) {}
   @Get()
+  @ApiOperation({ summary: 'Get all bookmarks for current user' })
+  @ApiResponse({
+    description: 'Bookmarks retrieved successfully',
+    type: [BookmarkDto],
+  })
   getBookmarks(@GetUser('id') userId: number) {
     console.log('calling getBookmarks api', userId);
 
@@ -31,6 +45,11 @@ export class BookmarkController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create new bookmark' })
+  @ApiCreatedResponse({
+    description: 'Bookmark created successfully',
+    type: BookmarkDto,
+  })
   createBookmark(
     @GetUser('id') userId: number,
     @Body() dto: CreateBookmarkDto,
@@ -41,6 +60,12 @@ export class BookmarkController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get bookmark by ID' })
+  @ApiParam({ name: 'id', description: 'Bookmark ID', example: 1 })
+  @ApiOkResponse({
+    description: 'Bookmark retrieved successfully',
+    type: BookmarkDto,
+  })
   getBookmarkById(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) bookmarkId: number,
@@ -51,6 +76,12 @@ export class BookmarkController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update bookmark by ID' })
+  @ApiParam({ name: 'id', description: 'Bookmark ID', example: 1 })
+  @ApiOkResponse({
+    description: 'Bookmark updated successfully',
+    type: BookmarkDto,
+  })
   editBookmarkById(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) bookmarkId: number,
@@ -63,6 +94,10 @@ export class BookmarkController {
 
   @Delete('all')
   @HttpCode(204)
+  @ApiOperation({ summary: 'Delete all bookmarks for current user' })
+  @ApiNoContentResponse({
+    description: 'All bookmarks deleted successfully',
+  })
   deleteAllBookmarks(@GetUser('id') userId: number) {
     console.log('calling deleteAllBookmarks api', userId);
     return this.bookmarkService.deleteAllBookmarks(userId);
@@ -70,6 +105,11 @@ export class BookmarkController {
 
   @Delete(':id')
   @HttpCode(204)
+  @ApiOperation({ summary: 'Delete bookmark by ID' })
+  @ApiParam({ name: 'id', description: 'Bookmark ID', example: 1 })
+  @ApiNoContentResponse({
+    description: 'Bookmark deleted successfully',
+  })
   deleteBookmarkById(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) bookmarkId: number,
