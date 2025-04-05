@@ -51,4 +51,42 @@ export class AuthController {
     // return 'i am signIn';
     return this.authService.signin(dto);
   }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: 200,
+    description: 'User logged out successfully',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden request',
+  })
+  logout() {
+    // return 'i am signOut';
+    // return {
+    //   message: 'signout route!!',
+    //   status: 'ok',
+    // };
+    // return this.authService.logout();
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: 200,
+    description: 'User refresh token successfully',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden request',
+  })
+  refresh() {
+    // return 'i am refresh';
+    // return {
+    //   message: 'refresh route!!',
+    //   status: 'ok',
+    // };
+    // return this.authService.refresh();
+  }
 }
