@@ -30,9 +30,9 @@ export class AuthController {
   //   return this.authService.signup(req.body);
   // }
   signup(@Body() dto: AuthDto) {
-    console.log({
-      dto,
-    });
+    // console.log({
+    //   dto,
+    // });
 
     return this.authService.signup(dto);
   }

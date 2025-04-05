@@ -7,11 +7,11 @@ import { EdiTUserDto } from './dto';
 import { UserService } from './user.service';
 
 @ApiBearerAuth()
+@UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @UseGuards(JwtGuard)
   @Get('me')
   @ApiResponse({
     status: 200,
@@ -21,16 +21,32 @@ export class UserController {
     status: 401,
     description: 'Unauthorized - Invalid or missing token',
   })
-  getMe(@GetUser() user: User, @GetUser('email') email: string) {
-    console.log({
-      // user: user,
-      email,
-    });
-
+  getMe(@GetUser() user: User) {
     // return 'use info';
     return user;
   }
 
-  @Patch('edit')
-  editUser(@GetUser('id') userId: number, @Body() dto: EdiTUserDto) {}
+  @Patch('me')
+  @ApiResponse({
+    status: 200,
+    description: 'User profile updated successfully',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Invalid or missing token',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - You do not have permission to edit this user',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error - An unexpected error occurred',
+  })
+  editUser(@GetUser('id') userId: number, @Body() dto: EdiTUserDto) {
+    console.log('Extracted userId:', userId);
+    console.log('DTO:', dto);
+
+    return this.userService.editUser(userId, dto);
+  }
 }

@@ -166,12 +166,22 @@ describe('App e2e', () => {
       it('should edit the user', () => {
         return pactum
           .spec()
-          .patch('/users/edit')
+          .patch('/users/me')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
           .withBody(dto)
           .expectStatus(200)
+          .inspect();
+      });
+
+      it('should throw if no token or some error', () => {
+        return pactum
+          .spec()
+          .patch('/users/me')
+          .withBody(dto)
+          .expectStatus(401)
+          .expectBodyContains('Unauthorized')
           .inspect();
       });
     });

@@ -32,7 +32,7 @@ export class AuthService {
     }
 
     const { hash, ...userWithoutHash } = user;
-    console.log('user found', userWithoutHash, 'with pass', user);
+    // console.log('user found', userWithoutHash, 'with pass', user);
 
     return this.signToken(
       userWithoutHash.id,

@@ -28,6 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new Error('User not found');
     }
 
+    console.log('payload:', payload);
     // Safely remove the `hash` property
     const { hash, ...userWithoutPassword } = user;
     // console.log(userWithoutPassword, 'userWithoutPassword');

@@ -7,6 +7,7 @@ export const GetUser = createParamDecorator(
       .getRequest<{ user?: Record<string, any> }>();
     const user = request.user;
 
+    console.log('Request User {get user decor}:', user);
     return data ? user?.[data] : user;
   },
 );
