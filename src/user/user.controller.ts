@@ -12,8 +12,8 @@ import
     ApiResponse,
   } from '@nestjs/swagger';
 import { User } from '@prisma/client';
-import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
+import { GetUser } from '../common/decorator';
 import { EdiTUserDto } from './dto';
 import { UserService } from './user.service';
 

@@ -1,6 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import
+  {
+    DocumentBuilder,
+    SwaggerModule,
+  } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -8,14 +12,21 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Bookmark api')
-    .setDescription('The test ->> bookmark API description')
+    .setDescription(
+      'The test ->> bookmark API description',
+    )
     .setVersion('1.0')
     // .addTag('bookmark')
     // .addTag('user')
     .addBearerAuth()
     .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  const documentFactory = () =>
+    SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup(
+    'api',
+    app,
+    documentFactory,
+  );
 
   // Enable global validation
   app.useGlobalPipes(

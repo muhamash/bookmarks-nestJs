@@ -1,29 +1,29 @@
 /* eslint-disable prettier/prettier */
 import
-    {
-        Body,
-        Controller,
-        Delete,
-        Get,
-        HttpCode,
-        Param,
-        ParseIntPipe,
-        Patch,
-        Post,
-        UseGuards,
-    } from '@nestjs/common';
+  {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    UseGuards,
+  } from '@nestjs/common';
 import
-    {
-        ApiBearerAuth,
-        ApiCreatedResponse,
-        ApiNoContentResponse,
-        ApiOkResponse,
-        ApiOperation,
-        ApiParam,
-        ApiResponse,
-    } from '@nestjs/swagger';
-import { GetUser } from '../auth/decorator';
+  {
+    ApiBearerAuth,
+    ApiCreatedResponse,
+    ApiNoContentResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiParam,
+    ApiResponse,
+  } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guard';
+import { GetUser } from '../common/decorator';
 import { BookmarkService } from './bookmark.service';
 import { BookmarkDto, CreateBookmarkDto, EditBookmarkDto } from './dto';
 

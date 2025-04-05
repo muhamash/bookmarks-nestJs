@@ -41,10 +41,13 @@ export class JwtStrategy extends PassportStrategy(
       throw new Error('User not found');
     }
 
-    console.log('payload:', payload);
+    // console.log('payload:', payload);
     // Safely remove the `hash` property
     const { hash, ...userWithoutPassword } = user;
-    // console.log(userWithoutPassword, 'userWithoutPassword');
+    console.log(
+      userWithoutPassword,
+      'userWithoutPassword',
+    );
 
     return userWithoutPassword;
   }

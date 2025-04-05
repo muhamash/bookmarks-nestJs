@@ -107,7 +107,50 @@ export class AuthService {
     });
   }
 
-  refresh() {}
+  async refreshToken(
+    userId: number,
+    refreshToken: string,
+  ) {
+    try {
+      const user =
+        await this.prisma.user.findUnique({
+          where: {
+            id: userId,
+          },
+        });
+
+      if (!user || !user.hashedRefreshToken) {
+        throw new ForbiddenException(
+          'i will no grant your access!!',
+        );
+      }
+
+      const tokenMatches = await argon.verify(
+        user?.hashedRefreshToken,
+        refreshToken,
+      );
+
+      if (!tokenMatches)
+        throw new ForbiddenException(
+          'Invalid refresh token',
+        );
+
+      if (tokenMatches)
+        return await this.signToken(
+          user.id,
+          user.email,
+          user.firstName ?? 'No Name',
+        );
+    } catch (error) {
+      console.error(
+        'Refresh token error:',
+        error,
+      );
+      throw new ForbiddenException(
+        'Token expired or invalid',
+      );
+    }
+  }
 
   async signToken(
     userId: number,

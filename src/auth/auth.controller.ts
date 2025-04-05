@@ -12,8 +12,8 @@ import
     ApiBearerAuth,
     ApiResponse,
   } from '@nestjs/swagger';
+import { GetUser } from '../common/decorator';
 import { AuthService } from './auth.service';
-import { GetUser } from './decorator';
 import { AuthDto } from './dto';
 import { JwtGuard, RtGuard } from './guard';
 
@@ -80,6 +80,7 @@ export class AuthController {
     return this.authService.logout(userId);
   }
 
+  @ApiBearerAuth()
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
@@ -92,12 +93,20 @@ export class AuthController {
     status: 403,
     description: 'Forbidden request',
   })
-  refresh() {
-    // return 'i am refresh';
-    // return {
-    //   message: 'refresh route!!',
-    //   status: 'ok',
-    // };
-    return this.authService.refresh();
+  refreshToken(
+    @GetUser('sub') userId: number,
+    @GetUser('refreshToken')
+    refreshToken: string,
+  ) {
+    console.log(
+      refreshToken,
+      userId,
+      'refreshing token',
+    );
+
+    return this.authService.refreshToken(
+      userId,
+      refreshToken,
+    );
   }
 }
