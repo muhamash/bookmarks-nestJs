@@ -5,7 +5,6 @@ import
     Controller,
     Delete,
     Get,
-    HttpCode,
     Param,
     ParseIntPipe,
     Patch,
@@ -16,7 +15,7 @@ import
   {
     ApiBearerAuth,
     ApiCreatedResponse,
-    ApiNoContentResponse,
+    ApiNotFoundResponse,
     ApiOkResponse,
     ApiOperation,
     ApiParam,
@@ -25,27 +24,44 @@ import
 import { JwtGuard } from '../auth/guard';
 import { GetUser } from '../common/decorator';
 import { BookmarkService } from './bookmark.service';
-import { BookmarkDto, CreateBookmarkDto, EditBookmarkDto } from './dto';
+import
+  {
+    BookmarkDto,
+    CreateBookmarkDto,
+    EditBookmarkDto,
+  } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
 @Controller('bookmarks')
 export class BookmarkController {
-  constructor(private bookmarkService: BookmarkService) {}
+  constructor(
+    private bookmarkService: BookmarkService,
+  ) {}
   @Get()
-  @ApiOperation({ summary: 'Get all bookmarks for current user' })
+  @ApiOperation({
+    summary: 'Get all bookmarks for current user',
+  })
   @ApiResponse({
-    description: 'Bookmarks retrieved successfully',
+    description:
+      'Bookmarks retrieved successfully',
     type: [BookmarkDto],
   })
   getBookmarks(@GetUser('id') userId: number) {
-    console.log('calling getBookmarks api', userId);
+    console.log(
+      'calling getBookmarks api',
+      userId,
+    );
 
-    return this.bookmarkService.getBookmarks(userId);
+    return this.bookmarkService.getBookmarks(
+      userId,
+    );
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create new bookmark' })
+  @ApiOperation({
+    summary: 'Create new bookmark',
+  })
   @ApiCreatedResponse({
     description: 'Bookmark created successfully',
     type: BookmarkDto,
@@ -54,9 +70,16 @@ export class BookmarkController {
     @GetUser('id') userId: number,
     @Body() dto: CreateBookmarkDto,
   ) {
-    console.log('calling createBookmark api', userId, dto);
+    console.log(
+      'calling createBookmark api',
+      userId,
+      dto,
+    );
 
-    return this.bookmarkService.createBookmark(userId, dto);
+    return this.bookmarkService.createBookmark(
+      userId,
+      dto,
+    );
   }
 
   @Get(':id')
@@ -67,7 +90,8 @@ export class BookmarkController {
     example: 1,
   })
   @ApiOkResponse({
-    description: 'Bookmark retrieved successfully',
+    description:
+      'Bookmark retrieved successfully',
     type: BookmarkDto,
   })
   @ApiResponse({
@@ -78,13 +102,26 @@ export class BookmarkController {
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) bookmarkId: number,
   ) {
-    console.log('Calling getBookmarkById API:', userId, bookmarkId);
-    return this.bookmarkService.getBookmarkById(userId, bookmarkId);
+    console.log(
+      'Calling getBookmarkById API:',
+      userId,
+      bookmarkId,
+    );
+    return this.bookmarkService.getBookmarkById(
+      userId,
+      bookmarkId,
+    );
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update bookmark by ID' })
-  @ApiParam({ name: 'id', description: 'Bookmark ID', example: 1 })
+  @ApiOperation({
+    summary: 'Update bookmark by ID',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Bookmark ID',
+    example: 1,
+  })
   @ApiOkResponse({
     description: 'Bookmark updated successfully',
     type: BookmarkDto,
@@ -94,34 +131,57 @@ export class BookmarkController {
     @Param('id', ParseIntPipe) bookmarkId: number,
     @Body() dto: EditBookmarkDto,
   ) {
-    console.log('calling editBookmarkById api', userId, bookmarkId, dto);
+    console.log(
+      'calling editBookmarkById api',
+      userId,
+      bookmarkId,
+      dto,
+    );
 
-    return this.bookmarkService.editBookmarkById(userId, bookmarkId, dto);
+    return this.bookmarkService.editBookmarkById(
+      userId,
+      bookmarkId,
+      dto,
+    );
   }
 
-  @Delete('all')
-  @HttpCode(204)
-  @ApiOperation({ summary: 'Delete all bookmarks for current user' })
-  @ApiNoContentResponse({
-    description: 'All bookmarks deleted successfully',
+  @Delete()
+  @ApiOperation({
+    summary: 'Delete all bookmarks of user',
   })
-  deleteAllBookmarks(@GetUser('id') userId: number) {
-    console.log('calling deleteAllBookmarks api', userId);
-    return this.bookmarkService.deleteAllBookmarks(userId);
+  @ApiOkResponse({
+    description: 'All user bookmarks deleted',
+  })
+  async deleteAllBookmarks(
+    @GetUser('id') userId: number,
+  ) {
+    return this.bookmarkService.deleteAllBookmarks(
+      userId,
+    );
   }
 
   @Delete(':id')
-  @HttpCode(204)
-  @ApiOperation({ summary: 'Delete bookmark by ID' })
-  @ApiParam({ name: 'id', description: 'Bookmark ID', example: 1 })
-  @ApiNoContentResponse({
+  @ApiOperation({
+    summary: 'Delete a bookmark by ID',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Bookmark ID',
+    example: 1,
+  })
+  @ApiOkResponse({
     description: 'Bookmark deleted successfully',
   })
-  deleteBookmarkById(
+  @ApiNotFoundResponse({
+    description: 'Bookmark not found',
+  })
+  async deleteBookmark(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) bookmarkId: number,
   ) {
-    console.log('calling deleteBookmarkById api', userId, bookmarkId);
-    return this.bookmarkService.deleteBookmarkById(userId, bookmarkId);
+    return this.bookmarkService.deleteBookmarkById(
+      userId,
+      bookmarkId,
+    );
   }
 }

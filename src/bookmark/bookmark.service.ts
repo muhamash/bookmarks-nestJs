@@ -75,22 +75,47 @@ export class BookmarkService {
     });
   }
 
-  deleteBookmarkById(
+  async deleteBookmarkById(
     userId: number,
     bookmarkId: number,
   ) {
-    return this.prisma.bookmark.delete({
+    const bookmark =
+      await this.prisma.bookmark.findFirst({
+        where: {
+          id: bookmarkId,
+          userId,
+        },
+      });
+
+    if (!bookmark) {
+      throw new NotFoundException(
+        'Bookmark not found or does not belong to user',
+      );
+    }
+
+    await this.prisma.bookmark.delete({
       where: {
         id: bookmarkId,
       },
     });
+
+    return {
+      message: 'Bookmark deleted successfully',
+      bookmarkId,
+    };
   }
 
-  deleteAllBookmarks(userId: number) {
-    return this.prisma.bookmark.deleteMany({
-      where: {
-        userId,
-      },
-    });
+  async deleteAllBookmarks(userId: number) {
+    const result =
+      await this.prisma.bookmark.deleteMany({
+        where: {
+          userId,
+        },
+      });
+
+    return {
+      message: `${result.count} bookmark(s) deleted`,
+      deletedCount: result.count,
+    };
   }
 }
