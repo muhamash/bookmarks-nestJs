@@ -61,17 +61,24 @@ export class BookmarkController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get bookmark by ID' })
-  @ApiParam({ name: 'id', description: 'Bookmark ID', example: 1 })
+  @ApiParam({
+    name: 'id',
+    description: 'Bookmark ID',
+    example: 1,
+  })
   @ApiOkResponse({
     description: 'Bookmark retrieved successfully',
     type: BookmarkDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Bookmark not found',
   })
   getBookmarkById(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) bookmarkId: number,
   ) {
-    console.log('calling getBookmarkById api', userId, bookmarkId);
-
+    console.log('Calling getBookmarkById API:', userId, bookmarkId);
     return this.bookmarkService.getBookmarkById(userId, bookmarkId);
   }
 
