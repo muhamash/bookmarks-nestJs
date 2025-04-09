@@ -1,7 +1,9 @@
 version: '3.8'
+
 services:
   dev-db:
     image: postgres:13
+    container_name: dev-db
     ports:
       - 5434:5432
     environment:
@@ -10,8 +12,10 @@ services:
       POSTGRES_DB: nest
     networks:
       - muhamash
+
   test-db:
     image: postgres:13
+    container_name: test-db
     ports:
       - 5435:5432
     environment:
@@ -20,5 +24,19 @@ services:
       POSTGRES_DB: nest
     networks:
       - muhamash
+
+  app:
+    container_name: nestjs-app
+    build: .
+    ports:
+      - '3000:3000'
+    depends_on:
+      - dev-db
+    env_file:
+      - .env
+    networks:
+      - muhamash
+    command: yarn start:prod
+
 networks:
   muhamash:
